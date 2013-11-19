@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Phonar</string>
+    <string name="action_settings">Settings</string>
+    <string name="findFriends">Find Friends</string>
+    <string name="createGroup">Create Group</string>
+    <string name="title_activity_chart_view">Crap-a-doodle</string>
+    
+   
+
+</resources>
