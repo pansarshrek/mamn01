@@ -13,12 +13,21 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.MapFragment;
 
 public class CreateGroupActivity extends SensorFusion implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener {
 	
 	private LocationClient mLocationClient;
+	private LatLng myPos;
+	private GoogleMap map;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +35,31 @@ public class CreateGroupActivity extends SensorFusion implements
 		setContentView(R.layout.activity_group_view);
 		Log.d("phonar", "starting group activity");
 		mLocationClient = new LocationClient(this, this, this);
+		
+		// Get a handle to the Map Fragment
+        map = ((MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map)).getMap();
+
+        LatLng nicklasApartment = new LatLng(55.7071961, 13.182156);
+
+        map.setMyLocationEnabled(true);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(nicklasApartment, 13));
+
+        Marker marker = map.addMarker(new MarkerOptions()
+                .title("Nicklas' Apartment")
+                .position(nicklasApartment));
+        
+        marker.setPosition(new LatLng(55.80, 13.182156));
+        
+        
+
+	}
+	
+	public void updateCamera(float bearing, LatLng pos) {
+        CameraPosition currentPlace = new CameraPosition.Builder()
+                .target(pos)
+                .bearing(bearing).zoom(18f).build();
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
 	}
 
@@ -78,13 +112,19 @@ public class CreateGroupActivity extends SensorFusion implements
 
 	@Override
 	protected void updateCallback() {
-		String text = "Relative to North: " + fusedOrientation[0] + ", Rotation X-axis: " + fusedOrientation[1] + ", Rotation Y-axis: " + fusedOrientation[2];
-//		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-		TextView orient0 = (TextView) findViewById(R.id.orient0);
-		TextView orient1 = (TextView) findViewById(R.id.orient1);
-		TextView orient2 = (TextView) findViewById(R.id.orient2);
-		orient0.setText("North: " + fusedOrientation[0]);
-		orient1.setText("X-axis: " + fusedOrientation[1]);
-		orient2.setText("Y-axis: " + fusedOrientation[2]);
+		if (mLocationClient != null) {
+			Location loc = mLocationClient.getLastLocation();
+			myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
+//			String text = "Relative to North: " + fusedOrientation[0] + ", Rotation X-axis: " + fusedOrientation[1] + ", Rotation Y-axis: " + fusedOrientation[2];
+//			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+			TextView orient0 = (TextView) findViewById(R.id.orient0);
+			TextView orient1 = (TextView) findViewById(R.id.orient1);
+			TextView orient2 = (TextView) findViewById(R.id.orient2);
+			orient0.setText("North: " + fusedOrientation[0]);
+			orient1.setText("X-axis: " + fusedOrientation[1]);
+			orient2.setText("Y-axis: " + fusedOrientation[2]);
+			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
+			updateCamera(bearing, myPos);
+		}
 	}
 }
