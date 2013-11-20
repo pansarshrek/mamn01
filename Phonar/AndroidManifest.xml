@@ -41,10 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="se.iDroid.phonar.activities.ChartViewActivity" >
-        </activity>
-        <activity android:name="se.iDroid.phonar.activities.CreateGroupActivity" >
-        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
