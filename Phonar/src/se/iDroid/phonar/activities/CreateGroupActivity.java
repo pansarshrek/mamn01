@@ -1,19 +1,20 @@
 package se.iDroid.phonar.activities;
 
 import se.iDroid.phonar.R;
-import android.app.Activity;
+import se.iDroid.phonar.sensors.SensorFusion;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 
-public class CreateGroupActivity extends Activity implements
+public class CreateGroupActivity extends SensorFusion implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener {
 	
@@ -73,5 +74,17 @@ public class CreateGroupActivity extends Activity implements
 	public void onDisconnected() {
 		Toast.makeText(this, "Disconnected. Please re-connect.",
                 Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	protected void updateCallback() {
+		String text = "Relative to North: " + fusedOrientation[0] + ", Rotation X-axis: " + fusedOrientation[1] + ", Rotation Y-axis: " + fusedOrientation[2];
+//		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+		TextView orient0 = (TextView) findViewById(R.id.orient0);
+		TextView orient1 = (TextView) findViewById(R.id.orient1);
+		TextView orient2 = (TextView) findViewById(R.id.orient2);
+		orient0.setText("North: " + fusedOrientation[0]);
+		orient1.setText("X-axis: " + fusedOrientation[1]);
+		orient2.setText("Y-axis: " + fusedOrientation[2]);
 	}
 }
