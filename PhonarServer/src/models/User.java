@@ -13,6 +13,10 @@ public class User {
 		setPosition(position);
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public void setPosition(Position position) {
 		this.position = position;
 	}

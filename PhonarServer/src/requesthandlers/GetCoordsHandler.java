@@ -16,10 +16,13 @@ public class GetCoordsHandler extends RequestHandler {
 	public DatagramPacket internalHandle(DataInputStream dis) throws IOException {
 		
 		dos.writeByte(Communication.COM_GET_COORDS);
+		String username = dis.readUTF();
 		List<User> users = UserDatabase.getUsers();
 		dos.writeInt(users.size());
 		for(User u : users) {
-			u.toStream(dos);
+			if(u.getName() != username) {
+				u.toStream(dos);
+			}
 		}
 	
 		byte[] buffer = baos.toByteArray();

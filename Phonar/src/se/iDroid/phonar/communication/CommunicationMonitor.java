@@ -50,7 +50,7 @@ public class CommunicationMonitor {
 	}
 	
 	public synchronized void updateCoords() {
-		tasks.add(new GetCoordsTask());
+		tasks.add(new GetCoordsTask(model));
 		notifyAll();
 	}
 	
