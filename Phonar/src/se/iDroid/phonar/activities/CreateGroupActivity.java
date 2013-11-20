@@ -42,6 +42,8 @@ public class CreateGroupActivity extends SensorFusion implements
 
         LatLng nicklasApartment = new LatLng(55.7071961, 13.182156);
 
+        
+        map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.setMyLocationEnabled(true);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(nicklasApartment, 13));
 
