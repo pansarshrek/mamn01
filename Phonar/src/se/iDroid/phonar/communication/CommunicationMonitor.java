@@ -4,6 +4,8 @@ import java.net.DatagramSocket;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import android.util.Log;
+
 
 import se.iDroid.phonar.communicationtasks.*;
 import se.iDroid.phonar.model.Model;
@@ -16,6 +18,7 @@ public class CommunicationMonitor {
 	private Queue<SendTask> tasks;
 
 	public CommunicationMonitor(DatagramSocket socket, Model model) {
+		Log.d("udp port", "Constructor: Sending from " + socket.getLocalPort());
 		tasks = new LinkedList<SendTask>();
 		this.model = model;
 		this.socket = socket;
@@ -23,6 +26,7 @@ public class CommunicationMonitor {
 	
 	public synchronized void sendPendingTasks() {
 		while (tasks.isEmpty()) {
+			Log.d("udp port", "Sending from " + socket.getLocalPort());
 			try {
 				wait();
 			} catch (InterruptedException e) {

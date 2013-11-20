@@ -1,6 +1,5 @@
 package se.iDroid.phonar.data;
 
-import android.content.SharedPreferences;
 
 public class Data {
 

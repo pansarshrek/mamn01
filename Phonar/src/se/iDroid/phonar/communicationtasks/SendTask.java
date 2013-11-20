@@ -7,6 +7,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import android.util.Log;
+
 
 
 public abstract class SendTask {
@@ -23,8 +25,10 @@ public abstract class SendTask {
 		try {
 			DatagramPacket packet = createPacket();
 			packet.setAddress(InetAddress.getByName("pansarshrek.se"));
+			
 			packet.setPort(13337);
 			socket.send(packet);
+			Log.d("phonar:SendTask", "Sending from port " + socket.getLocalPort());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

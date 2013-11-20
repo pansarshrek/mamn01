@@ -5,13 +5,12 @@ import java.net.SocketException;
 
 import se.iDroid.phonar.communication.CommunicationMonitor;
 import se.iDroid.phonar.communication.PollThread;
+import se.iDroid.phonar.communication.ReceiverThread;
 import se.iDroid.phonar.communication.SendThread;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.Model;
 import android.content.Context;
 import android.util.Log;
-
-import com.google.android.gms.location.LocationClient;
 
 public class Bootstrap {
 	
@@ -32,6 +31,9 @@ public class Bootstrap {
 			comMon = new CommunicationMonitor(socket, model);
 			SendThread sentThread = new SendThread(comMon);
 			PollThread pollThread = new PollThread(comMon);
+			Log.d("udp port", "bootstrap constructor " + socket.getLocalPort());
+			ReceiverThread receiverThread = new ReceiverThread(model, socket);
+			receiverThread.start();
 			sentThread.start();
 			pollThread.start();
 		} catch (SocketException e) {

@@ -25,7 +25,8 @@ public abstract class RequestHandler {
 			DatagramPacket res = internalHandle(dis);
 			res.setAddress(packet.getAddress());
 			res.setPort(packet.getPort());
-			
+			System.out.println("Receiving packet from client's port " + packet.getPort());
+			System.out.println("Sending Response to " + packet.getAddress().toString() + ":" + packet.getPort() + " from port " + socket.getLocalPort());
 			socket.send(res);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

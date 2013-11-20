@@ -40,7 +40,6 @@ public class MainActivity extends SensorFusion implements
 	private GoogleMap map;
 	private Bootstrap bootstrap;
 	private LocationRequest locationRequest;
-	private LocationManager locationManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +81,6 @@ public class MainActivity extends SensorFusion implements
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		locationRequest.setInterval(5000);
 		locationRequest.setFastestInterval(1000);
-		
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
 		// Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
@@ -149,8 +146,6 @@ public class MainActivity extends SensorFusion implements
 		if (locationClient != null) {
 			Location loc = locationClient.getLastLocation();
 			myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
-//			String text = "Relative to North: " + fusedOrientation[0] + ", Rotation X-axis: " + fusedOrientation[1] + ", Rotation Y-axis: " + fusedOrientation[2];
-//			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 			TextView orient0 = (TextView) findViewById(R.id.orient0);
 			TextView orient1 = (TextView) findViewById(R.id.orient1);
 			TextView orient2 = (TextView) findViewById(R.id.orient2);
