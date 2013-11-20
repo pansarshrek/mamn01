@@ -1,6 +1,8 @@
 package se.iDroid.phonar.activities;
 
 import se.iDroid.phonar.R;
+import se.iDroid.phonar.bootstrap.Bootstrap;
+import se.iDroid.phonar.sensors.ConnectionCallbacks;
 import se.iDroid.phonar.sensors.SensorFusion;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,20 +23,21 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.MapFragment;
 
-public class CreateGroupActivity extends SensorFusion implements
-		GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener {
+public class CreateGroupActivity extends SensorFusion {
 	
-	private LocationClient mLocationClient;
+	private LocationClient locationClient;
 	private LatLng myPos;
 	private GoogleMap map;
+	private Bootstrap bootstrap;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_view);
 		Log.d("phonar", "starting group activity");
-		mLocationClient = new LocationClient(this, this, this);
+		ConnectionCallbacks cc = new ConnectionCallbacks(this);
+		bootstrap = Bootstrap.getInstance(this);
+		locationClient = bootstrap.getLocationClient();
 		
 		// Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
@@ -49,10 +52,7 @@ public class CreateGroupActivity extends SensorFusion implements
 
         Marker marker = map.addMarker(new MarkerOptions()
                 .title("Nicklas' Apartment")
-                .position(nicklasApartment));
-        
-        marker.setPosition(new LatLng(55.80, 13.182156));
-        
+                .position(nicklasApartment));        
         
 
 	}
@@ -60,7 +60,7 @@ public class CreateGroupActivity extends SensorFusion implements
 	public void updateCamera(float bearing, LatLng pos) {
         CameraPosition currentPlace = new CameraPosition.Builder()
                 .target(pos)
-                .bearing(bearing).zoom(18f).build();
+                .bearing(bearing).zoom(13f).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 
 	}
@@ -73,7 +73,7 @@ public class CreateGroupActivity extends SensorFusion implements
 	}
 	
 	public void buttonClick(View v) {
-		Location loc = mLocationClient.getLastLocation();
+		Location loc = locationClient.getLastLocation();
 		if (loc != null) {
 			String text = "Alt: " + loc.getAltitude() + ", Long: " + loc.getLongitude() + ", Lat: " + loc.getLatitude();
 			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
@@ -86,36 +86,20 @@ public class CreateGroupActivity extends SensorFusion implements
     protected void onStart() {
         super.onStart();
         // Connect the client.
-        mLocationClient.connect();
+        locationClient.connect();
     }
 	
 	@Override
     protected void onStop() {
         // Disconnecting the client invalidates it.
-        mLocationClient.disconnect();
+        locationClient.disconnect();
         super.onStop();
     }
-	
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {
-		Toast.makeText(this, "ConnectionFailed", Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onConnected(Bundle arg0) {
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onDisconnected() {
-		Toast.makeText(this, "Disconnected. Please re-connect.",
-                Toast.LENGTH_SHORT).show();
-	}
 
 	@Override
 	protected void updateCallback() {
-		if (mLocationClient != null) {
-			Location loc = mLocationClient.getLastLocation();
+		if (locationClient != null) {
+			Location loc = locationClient.getLastLocation();
 			myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
 //			String text = "Relative to North: " + fusedOrientation[0] + ", Rotation X-axis: " + fusedOrientation[1] + ", Rotation Y-axis: " + fusedOrientation[2];
 //			Toast.makeText(this, text, Toast.LENGTH_LONG).show();

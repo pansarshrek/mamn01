@@ -7,8 +7,8 @@ public class Model {
 	private User me;
 	private ArrayList<User> users;
 	
-	public Model() {
-		me = new User("Erik", 0.25, 0.34, 0.23);
+	public Model(String username) {
+		me = new User(username, 0, 0, 0);
 		users = new ArrayList<User>();
 	}
 	
@@ -26,6 +26,14 @@ public class Model {
 	
 	public String myName() {
 		return me.getName();
+	}
+	
+	public void setLatitude(double lat) {
+		me.setLatitude(lat);
+	}
+	
+	public void setLongitude(double longitude) {
+		me.setLongitude(longitude);
 	}
 	
 	public void updateUserCoords(ArrayList<User> users) {
