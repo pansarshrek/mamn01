@@ -20,7 +20,7 @@ public class GetCoordsHandler extends RequestHandler {
 		List<User> users = UserDatabase.getUsers();
 		dos.writeInt(users.size() - 1);
 		for(User u : users) {
-			if(u.getName() != username) {
+			if(!u.getName().equals(username)) {
 				u.toStream(dos);
 			}
 		}
