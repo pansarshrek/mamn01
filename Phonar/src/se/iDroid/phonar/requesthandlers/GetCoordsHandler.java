@@ -1,13 +1,12 @@
 package se.iDroid.phonar.requesthandlers;
 
-import java.awt.font.NumericShaper;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import android.util.Log;
-
 import se.iDroid.phonar.model.Model;
 import se.iDroid.phonar.model.User;
+import android.os.AsyncTask;
+import android.util.Log;
 
 public class GetCoordsHandler extends RequestHandler {
 	
@@ -29,6 +28,8 @@ public class GetCoordsHandler extends RequestHandler {
 		}
 		
 		model.updateUserCoords(users);
+				
+		
 	}
 
 }

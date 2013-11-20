@@ -3,6 +3,8 @@ package se.iDroid.phonar.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.util.Log;
+
 public class Model {
 	
 	private User me;
@@ -40,6 +42,7 @@ public class Model {
 	public void updateUserCoords(ArrayList<User> userList) {
 		for (User u : userList) {
 			users.put(u.getName(), u);
+			Log.d("phonar:Model", "User: " + u.getName() + ". Long = " + u.getLongitude() + ". Lat = " + u.getLatitude());
 		}
 	}
 	
