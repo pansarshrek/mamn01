@@ -20,9 +20,8 @@ public class CreateUserHandler extends RequestHandler {
 		try {
 			dos.writeByte(Communication.COM_CREATE_USER);
 			String name = dis.readUTF();
-			Position pos = new Position(dis);
 			
-			if (UserDatabase.addUser(name, pos)) {
+			if (UserDatabase.addUser(name)) {
 				dos.writeByte(Communication.ANS_SUCCESS);
 			} 
 		} catch (UserExistsException e) {

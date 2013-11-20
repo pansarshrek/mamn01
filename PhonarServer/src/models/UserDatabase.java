@@ -11,11 +11,11 @@ public class UserDatabase {
 
 	private static HashMap<String, User> users = new HashMap<String, User>();
 	
-	public static boolean addUser(String name, Position pos) throws UserExistsException {
+	public static boolean addUser(String name) throws UserExistsException {
 		if (users.containsKey(name)) {
 			throw new UserExistsException();
 		} else {
-			users.put(name, new User(name, pos));
+			users.put(name, new User(name, new Position(0, 0, 0)));
 		}
 		return true;
 	}

@@ -7,7 +7,7 @@ import java.net.DatagramPacket;
 
 public abstract class RequestHandler {
 	
-	DataInputStream dis;
+	protected DataInputStream dis;
 	
 	
 	public void handleRequest(DatagramPacket packet) {

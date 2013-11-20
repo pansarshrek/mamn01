@@ -15,18 +15,13 @@ public class GetCoordsHandler extends RequestHandler {
 	@Override
 	public DatagramPacket internalHandle(DataInputStream dis) throws IOException {
 		
-			dos.writeByte(Communication.COM_GET_COORDS);
-			
-			List<User> users = UserDatabase.getUsers();
-			
-			dos.writeInt(users.size());
-			
-			for(User u : users) {
-				u.toStream(dos);
-			}
-		
-
-
+		dos.writeByte(Communication.COM_GET_COORDS);
+		List<User> users = UserDatabase.getUsers();
+		dos.writeInt(users.size());
+		for(User u : users) {
+			u.toStream(dos);
+		}
+	
 		byte[] buffer = baos.toByteArray();
 		
 		return new DatagramPacket(buffer, buffer.length);

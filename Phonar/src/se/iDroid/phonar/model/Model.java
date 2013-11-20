@@ -1,15 +1,16 @@
 package se.iDroid.phonar.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Model {
 	
 	private User me;
-	private ArrayList<User> users;
+	private HashMap<String, User> users;
 	
 	public Model(String username) {
 		me = new User(username, 0, 0, 0);
-		users = new ArrayList<User>();
+		users = new HashMap<String, User>();
 	}
 	
 	public Double myLongitude() {
@@ -36,8 +37,10 @@ public class Model {
 		me.setLongitude(longitude);
 	}
 	
-	public void updateUserCoords(ArrayList<User> users) {
-		this.users = users;
+	public void updateUserCoords(ArrayList<User> userList) {
+		for (User u : userList) {
+			users.put(u.getName(), u);
+		}
 	}
 	
 	
