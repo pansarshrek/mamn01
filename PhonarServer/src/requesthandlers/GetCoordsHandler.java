@@ -18,7 +18,7 @@ public class GetCoordsHandler extends RequestHandler {
 		dos.writeByte(Communication.COM_GET_COORDS);
 		String username = dis.readUTF();
 		List<User> users = UserDatabase.getUsers();
-		dos.writeInt(users.size());
+		dos.writeInt(users.size() - 1);
 		for(User u : users) {
 			if(u.getName() != username) {
 				u.toStream(dos);
