@@ -5,9 +5,11 @@ import se.iDroid.phonar.bootstrap.Bootstrap;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.sensors.SensorFusion;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +18,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -25,12 +31,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends SensorFusion {
+public class MainActivity extends SensorFusion implements
+	GooglePlayServicesClient.ConnectionCallbacks,
+	GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	
 	private LocationClient locationClient;
 	private LatLng myPos;
 	private GoogleMap map;
 	private Bootstrap bootstrap;
+	private LocationRequest locationRequest;
+	private LocationManager locationManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,14 @@ public class MainActivity extends SensorFusion {
 		
 		bootstrap = Bootstrap.getInstance(this);
 		bootstrap.getCommunicationMonitor().createUser();
-		locationClient = bootstrap.getLocationClient();
+		locationClient = new LocationClient(this, this, this);
+		
+		locationRequest = LocationRequest.create();
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		locationRequest.setInterval(5000);
+		locationRequest.setFastestInterval(1000);
+		
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
 		// Get a handle to the Map Fragment
         map = ((MapFragment) getFragmentManager()
@@ -91,7 +108,6 @@ public class MainActivity extends SensorFusion {
                 .target(pos)
                 .bearing(bearing).zoom(13f).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
-
 	}
 
 	@Override
@@ -121,10 +137,13 @@ public class MainActivity extends SensorFusion {
 	@Override
     protected void onStop() {
         // Disconnecting the client invalidates it.
+		if (locationClient.isConnected()) {
+			locationClient.removeLocationUpdates(this);
+		}
         locationClient.disconnect();
         super.onStop();
     }
-
+	
 	@Override
 	protected void updateCallback() {
 		if (locationClient != null) {
@@ -142,4 +161,29 @@ public class MainActivity extends SensorFusion {
 			updateCamera(bearing, myPos);
 		}
 	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		Toast.makeText(this, "ConnectionFailed", Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onConnected(Bundle arg0) {
+        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+        locationClient.requestLocationUpdates(locationRequest, this);
+	}
+
+	@Override
+	public void onDisconnected() {
+		Toast.makeText(this, "Disconnected. Please re-connect.",
+                Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onLocationChanged(Location loc) {
+		Toast.makeText(this, "location updated", Toast.LENGTH_SHORT).show();
+		bootstrap.getModel().setLatitude(loc.getLatitude());
+		bootstrap.getModel().setLongitude(loc.getLongitude());
+	}
+
 }

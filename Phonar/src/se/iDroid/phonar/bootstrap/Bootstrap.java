@@ -8,7 +8,6 @@ import se.iDroid.phonar.communication.PollThread;
 import se.iDroid.phonar.communication.SendThread;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.Model;
-import se.iDroid.phonar.sensors.ConnectionCallbacks;
 import android.content.Context;
 import android.util.Log;
 
@@ -20,7 +19,6 @@ public class Bootstrap {
 	private Model model;
 	private CommunicationMonitor comMon;
 	private Context context;
-	private LocationClient locationClient;
 
 	private Bootstrap(Context context) {
 		setContext(context);
@@ -41,22 +39,12 @@ public class Bootstrap {
 		}
 	}
 	
-	private void createLocationManager() {
-		ConnectionCallbacks cc = new ConnectionCallbacks(context);
-		this.locationClient = new LocationClient(context, cc, cc);
-	}
-	
 	public void setContext(Context context) {
 		this.context = context;
-		createLocationManager();
 	}
 	
 	public CommunicationMonitor getCommunicationMonitor() {
 		return comMon;
-	}
-	
-	public LocationClient getLocationClient() {
-		return locationClient;
 	}
 	
 	public Model getModel() {

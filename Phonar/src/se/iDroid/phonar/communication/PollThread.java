@@ -10,20 +10,17 @@ public class PollThread extends Thread {
 	}
 
 	public void run() {
+		long sleepTime = 5000;
+		long sleepUntil = System.currentTimeMillis();
 		while (true) {
 			com.sendCoords();
 			com.updateCoords();
-			tick(5000);
+			sleepUntil += sleepTime;
+			try {
+				Thread.sleep(sleepUntil - System.currentTimeMillis());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
-	public void tick(int time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }

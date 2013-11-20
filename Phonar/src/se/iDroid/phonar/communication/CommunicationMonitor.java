@@ -10,7 +10,6 @@ import se.iDroid.phonar.model.Model;
 
 public class CommunicationMonitor {
 	
-	private static CommunicationMonitor instance;
 	private Model model;
 	private DatagramSocket socket;
 	
