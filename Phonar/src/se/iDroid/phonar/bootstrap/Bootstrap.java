@@ -2,32 +2,46 @@ package se.iDroid.phonar.bootstrap;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
 
+import se.iDroid.phonar.activities.MainActivity;
 import se.iDroid.phonar.communication.CommunicationMonitor;
 import se.iDroid.phonar.communication.PollThread;
 import se.iDroid.phonar.communication.ReceiverThread;
 import se.iDroid.phonar.communication.SendThread;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.Model;
-import android.content.Context;
+import se.iDroid.phonar.model.User;
+import android.app.Activity;
 import android.util.Log;
 
-public class Bootstrap {
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class Bootstrap implements Observer {
 	
 	private static Bootstrap instance;
 	private Model model;
 	private CommunicationMonitor comMon;
-	private Context context;
+	private MainActivity activity;
+	
 
-	private Bootstrap(Context context) {
-		setContext(context);
+	private Bootstrap(MainActivity activity) {
 		DatagramSocket socket;
+		this.activity = activity;
+		
+		
 		try {
 			Log.d("Phonar:UDP", "Creating DatagramSocket...");
 			socket = new DatagramSocket();
 			Log.d("Phonar:UDP", "DatagramSocket created");
-			String username = context.getSharedPreferences(Data.DATAFILE, 0).getString(Data.USERNAME, "DEFAULT");
+			String username = activity.getSharedPreferences(Data.DATAFILE, 0).getString(Data.USERNAME, "DEFAULT");
 			model = new Model(username);
+			model.addObserver(this);
 			comMon = new CommunicationMonitor(socket, model);
 			SendThread sentThread = new SendThread(comMon);
 			PollThread pollThread = new PollThread(comMon);
@@ -41,10 +55,6 @@ public class Bootstrap {
 		}
 	}
 	
-	public void setContext(Context context) {
-		this.context = context;
-	}
-	
 	public CommunicationMonitor getCommunicationMonitor() {
 		return comMon;
 	}
@@ -53,12 +63,24 @@ public class Bootstrap {
 		return model;
 	}
 	
-	public static Bootstrap getInstance(Context context) {
+	public static Bootstrap getInstance(MainActivity activity) {
 		if (instance == null) {
-			instance = new Bootstrap(context);
-		} else {
-			instance.setContext(context);
-		}
+			instance = new Bootstrap(activity);
+		} 
 		return instance;
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				
+				HashMap<String, User> users = model.getUsers();
+				for (Entry<String, User> e : users.entrySet()) {
+					activity.setMarker(e.getKey(), new LatLng(e.getValue().getLatitude(), e.getValue().getLongitude()));
+				}
+			}
+		});		
 	}
 }

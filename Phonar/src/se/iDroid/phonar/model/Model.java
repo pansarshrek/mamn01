@@ -2,10 +2,11 @@ package se.iDroid.phonar.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
 
 import android.util.Log;
 
-public class Model {
+public class Model extends Observable {
 	
 	private User me;
 	private HashMap<String, User> users;
@@ -39,11 +40,17 @@ public class Model {
 		me.setLongitude(longitude);
 	}
 	
+	public HashMap<String, User> getUsers() {
+		return users;
+	}
+	
 	public void updateUserCoords(ArrayList<User> userList) {
 		for (User u : userList) {
 			users.put(u.getName(), u);
 			Log.d("phonar:Model", "User: " + u.getName() + ". Long = " + u.getLongitude() + ". Lat = " + u.getLatitude());
 		}
+		setChanged();
+		notifyObservers();
 	}
 	
 	

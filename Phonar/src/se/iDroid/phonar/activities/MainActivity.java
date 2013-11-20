@@ -1,5 +1,7 @@
 package se.iDroid.phonar.activities;
 
+import java.util.HashMap;
+
 import se.iDroid.phonar.R;
 import se.iDroid.phonar.bootstrap.Bootstrap;
 import se.iDroid.phonar.data.Data;
@@ -40,12 +42,14 @@ public class MainActivity extends SensorFusion implements
 	private GoogleMap map;
 	private Bootstrap bootstrap;
 	private LocationRequest locationRequest;
+	private HashMap<String, Marker> mapMarkers;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.d("phonar", "starting group activity");
+		mapMarkers = new HashMap<String, Marker>();
 		final SharedPreferences sp = getSharedPreferences(Data.DATAFILE, 0);
 
 		if (!sp.contains(Data.USERNAME)) {
@@ -86,18 +90,20 @@ public class MainActivity extends SensorFusion implements
         map = ((MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map)).getMap();
 
-        LatLng nicklasApartment = new LatLng(55.7071961, 13.182156);
-
-        
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(nicklasApartment, 13));
-
-        Marker marker = map.addMarker(new MarkerOptions()
-                .title("Nicklas' Apartment")
-                .position(nicklasApartment));        
-        
-
+	}
+	
+	public void setMarker(String name, LatLng pos) {
+		if (mapMarkers.containsKey(name)) {
+			Marker m = mapMarkers.get(name);
+			m.setPosition(pos);
+		} else {
+			Marker marker = map.addMarker(new MarkerOptions()
+                .title(name)
+                .position(pos)); 
+			mapMarkers.put(name, marker);
+		}
 	}
 	
 	public void updateCamera(float bearing, LatLng pos) {
