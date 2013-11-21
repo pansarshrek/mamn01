@@ -51,6 +51,7 @@ public class MainActivity extends SensorFusion implements
 		Log.d("phonar", "starting group activity");
 		mapMarkers = new HashMap<String, Marker>();
 		final SharedPreferences sp = getSharedPreferences(Data.DATAFILE, 0);
+		myPos = new LatLng(0, 0);
 
 		if (!sp.contains(Data.USERNAME)) {
 			// SHOW DIALOG
