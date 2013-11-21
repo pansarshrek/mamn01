@@ -20,12 +20,12 @@ public class UserDatabase {
 		return true;
 	}
 	
-	public static User getUser(String name) throws UserDoesNotExistException {
+	public static User getUser(String name) {
 		User search = users.get(name);
 		if(search != null) {
 			return search;
 		} else {
-			throw new UserDoesNotExistException();
+			return null;
 		}
 	}
 
@@ -41,8 +41,13 @@ public class UserDatabase {
 		return users.remove(new User(name, null)) != null;
 	}
 	
-	public static void updateUserPos(String name, Position pos) throws UserDoesNotExistException {
+	public static void updateUserPos(String name, Position pos) throws UserExistsException {
+		
 		User u = getUser(name);
+		if (u == null) {
+			UserDatabase.addUser(name);
+			u = getUser(name);
+		}
 		u.setPosition(pos);
 	}
 	

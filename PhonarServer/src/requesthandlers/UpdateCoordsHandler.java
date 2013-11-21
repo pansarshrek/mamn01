@@ -10,6 +10,7 @@ import models.UserDatabase;
 import communication.Communication;
 
 import exceptions.UserDoesNotExistException;
+import exceptions.UserExistsException;
 
 public class UpdateCoordsHandler extends RequestHandler {
 
@@ -24,8 +25,7 @@ public class UpdateCoordsHandler extends RequestHandler {
 			UserDatabase.updateUserPos(name, pos);
 			
 			dos.writeByte(Communication.ANS_SUCCESS);
-		}catch (UserDoesNotExistException e) {
-			
+		} catch (UserExistsException e) {
 			dos.writeByte(Communication.ANS_FAILURE);
 		}
 		
