@@ -43,7 +43,7 @@ public class MainActivity extends SensorFusion implements
 	private Bootstrap bootstrap;
 	private LocationRequest locationRequest;
 	private HashMap<String, Marker> mapMarkers;
-	
+	private int nbrDummyLocations = 4;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,6 +94,24 @@ public class MainActivity extends SensorFusion implements
         map.setMyLocationEnabled(true);
 	}
 	
+	private void placeDummyLocations(int nbrDummyLocations) {
+		if(!mapMarkers.containsKey("person 1")){
+			for(int i = 0; i <nbrDummyLocations;i++){
+				double randomLong =  1+(Math.random() -0.5)*0.002;
+				double randomLat = 1+(Math.random() -0.5)*0.001;//latitude has half the range of longitude
+				setMarker("person "+(i+1), new LatLng(myPos.latitude*randomLat,myPos.longitude*randomLong));
+			}
+		}
+		else{
+			for(int i = 0; i <nbrDummyLocations;i++){
+				double randomLong =  1+(Math.random() -0.5)*0.0002;
+				double randomLat = 1+(Math.random() -0.5)*0.0001;//latitude has half the range of longitude
+				LatLng startLocation = mapMarkers.get("person " +(i+1)).getPosition();
+				setMarker("person "+(i+1), new LatLng(startLocation.latitude*randomLat,startLocation.longitude*randomLong));
+			}
+		}
+	}
+
 	public void setMarker(String name, LatLng pos) {
 		if (mapMarkers.containsKey(name)) {
 			Marker m = mapMarkers.get(name);
@@ -160,6 +178,7 @@ public class MainActivity extends SensorFusion implements
 			orient2.setText("Y-axis: " + fusedOrientation[2]);
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
 			updateCamera(bearing, myPos);
+			
 		}
 	}
 
@@ -185,6 +204,7 @@ public class MainActivity extends SensorFusion implements
 		Toast.makeText(this, "location updated", Toast.LENGTH_SHORT).show();
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
+		placeDummyLocations(nbrDummyLocations);
 	}
 
 }
