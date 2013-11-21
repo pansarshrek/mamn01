@@ -92,6 +92,11 @@ public class MainActivity extends SensorFusion implements
 
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         map.setMyLocationEnabled(true);
+        map.getUiSettings().setCompassEnabled(false);
+        map.getUiSettings().setZoomControlsEnabled(false);
+        map.getUiSettings().setScrollGesturesEnabled(false);
+        
+        map.moveCamera(CameraUpdateFactory.zoomTo(13));
 	}
 	
 	public void setMarker(String name, LatLng pos) {
@@ -106,10 +111,15 @@ public class MainActivity extends SensorFusion implements
 		}
 	}
 	
-	public void updateCamera(float bearing, LatLng pos) {
-        CameraPosition currentPlace = new CameraPosition.Builder()
-                .target(pos)
-                .bearing(bearing).zoom(13f).build();
+	public void updateBearing(float bearing) {
+		map.moveCamera(CameraUpdateFactory.newCameraPosition(
+				new CameraPosition.Builder(map.getCameraPosition())
+					.bearing(bearing).build()));
+	}
+	
+	public void updatePos(LatLng pos) {
+        CameraPosition currentPlace = new CameraPosition.Builder(map.getCameraPosition())
+                .target(pos).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
 	}
 
@@ -150,8 +160,6 @@ public class MainActivity extends SensorFusion implements
 	@Override
 	protected void updateCallback() {
 		if (locationClient != null) {
-			Location loc = locationClient.getLastLocation();
-			myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
 			TextView orient0 = (TextView) findViewById(R.id.orient0);
 			TextView orient1 = (TextView) findViewById(R.id.orient1);
 			TextView orient2 = (TextView) findViewById(R.id.orient2);
@@ -159,7 +167,7 @@ public class MainActivity extends SensorFusion implements
 			orient1.setText("X-axis: " + fusedOrientation[1]);
 			orient2.setText("Y-axis: " + fusedOrientation[2]);
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
-			updateCamera(bearing, myPos);
+			updateBearing(bearing);
 		}
 	}
 
@@ -183,6 +191,8 @@ public class MainActivity extends SensorFusion implements
 	@Override
 	public void onLocationChanged(Location loc) {
 		Toast.makeText(this, "location updated", Toast.LENGTH_SHORT).show();
+		myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
+		updatePos(myPos);
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
 	}
