@@ -179,12 +179,6 @@ public class MainActivity extends SensorFusion implements
 	@Override
 	protected void updateCallback() {
 		if (locationClient != null) {
-			TextView orient0 = (TextView) findViewById(R.id.orient0);
-			TextView orient1 = (TextView) findViewById(R.id.orient1);
-			TextView orient2 = (TextView) findViewById(R.id.orient2);
-			orient0.setText("North: " + fusedOrientation[0]);
-			orient1.setText("X-axis: " + fusedOrientation[1]);
-			orient2.setText("Y-axis: " + fusedOrientation[2]);
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
 			updatePos(myPos);
 			updateBearing(bearing);
