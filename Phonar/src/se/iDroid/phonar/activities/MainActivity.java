@@ -212,6 +212,7 @@ public class MainActivity extends SensorFusion implements
 		Toast.makeText(this, "location updated", Toast.LENGTH_SHORT).show();
 		myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
 		updatePos(myPos);
+		
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
 		placeDummyLocations(nbrDummyLocations);
