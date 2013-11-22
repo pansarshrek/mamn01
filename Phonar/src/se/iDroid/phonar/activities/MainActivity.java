@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -44,15 +45,16 @@ public class MainActivity extends SensorFusion implements
 	private LocationRequest locationRequest;
 	private HashMap<String, Marker> mapMarkers;
 	private int nbrDummyLocations = 4;
+	private ViewFlipper viewFlipper;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.d("phonar", "starting group activity");
 		mapMarkers = new HashMap<String, Marker>();
+		viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
 		final SharedPreferences sp = getSharedPreferences(Data.DATAFILE, 0);
 		myPos = new LatLng(0, 0);
-
 		if (!sp.contains(Data.USERNAME)) {
 			// SHOW DIALOG
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -182,6 +184,17 @@ public class MainActivity extends SensorFusion implements
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
 			updatePos(myPos);
 			updateBearing(bearing);
+			
+			if(viewFlipper.getDisplayedChild() == 0 && fusedOrientation[1] <-1.3){
+				viewFlipper.setInAnimation(this, R.anim.in_from_top);
+		        viewFlipper.setOutAnimation(this, R.anim.out_to_top);
+		        viewFlipper.showNext();
+			}
+			else if(viewFlipper.getDisplayedChild() == 1 && fusedOrientation[1] >-0.7){
+				viewFlipper.setInAnimation(this, R.anim.in_from_bottom);
+		        viewFlipper.setOutAnimation(this, R.anim.out_to_bottom);
+		        viewFlipper.showPrevious();
+			}
 		}
 	}
 
