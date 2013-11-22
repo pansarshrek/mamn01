@@ -2,64 +2,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-   
-     <ViewFlipper
-            android:id="@+id/view_flipper"
+
+    <ViewFlipper
+        android:id="@+id/view_flipper"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="6dip" >
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_margin="6dip" 
-            android:layout_alignParentRight="true"
-        	android:layout_alignParentTop="true"
-        	android:layout_alignParentLeft="true"
-        	>
-    	<LinearLayout 
-	        android:id="@+id/lables"
-   		    android:orientation="vertical"
-        	android:layout_width="fill_parent"
-        	android:layout_height="fill_parent"
-        	
-        	>
-        	<TextView
-	        	android:id="@+id/orient0"
-	        	android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:text="North: " />
-        	<TextView
-	        	android:id="@+id/orient1"
-	        	android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:text="X-axis:" />
-        	<TextView
-	        	android:id="@+id/orient2"
-	        	android:layout_width="wrap_content"
-	        	android:layout_height="wrap_content"
-	        	android:text="Y-axis:" />
-        	<fragment
-	        	android:id="@+id/map"
-	        	android:name="com.google.android.gms.maps.MapFragment"
-        		android:layout_width="fill_parent"
-        		android:layout_height="fill_parent"
-        	/>
-    	</LinearLayout>    
-    	
-		
-		<LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:orientation="vertical" >
-                    <TextView
-                        android:layout_marginTop="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="AR stuff goes here"
-                        android:textColor="#191975"
-                        android:textSize="25dp"
-                        android:textStyle="bold" >
-                    </TextView>
-    	</LinearLayout>
->>>>>>> Stashed changes
+            android:gravity="center"
+            android:orientation="vertical" >
 
-	</ViewFlipper>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="AR stuff goes here"
+                android:textColor="#191975"
+                android:textSize="25dp"
+                android:textStyle="bold" >
+            </TextView>
+        </LinearLayout>
+    </ViewFlipper>
 
 </RelativeLayout>
