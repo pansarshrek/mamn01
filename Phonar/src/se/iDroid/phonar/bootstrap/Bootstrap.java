@@ -15,12 +15,10 @@ import se.iDroid.phonar.communication.SendThread;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.Model;
 import se.iDroid.phonar.model.User;
-import android.app.Activity;
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Bootstrap implements Observer {
 	
@@ -82,5 +80,19 @@ public class Bootstrap implements Observer {
 				}
 			}
 		});		
+	}
+	
+	public void vibrateIfPointedAt(Location locA, Location locB, float bearing) {
+
+		HashMap<String, User> users = model.getUsers();
+		for (Entry<String, User> e : users.entrySet()) {
+			locB.setLatitude(e.getValue().getLatitude());
+			locB.setLongitude(e.getValue().getLongitude());
+
+			if (Math.abs(locA.bearingTo(locB) - bearing) < 2) {
+				// vibrate
+				Log.d("Phonar", "I am pointing at " + e.getValue().getName());
+			}
+		}
 	}
 }

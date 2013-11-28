@@ -184,6 +184,7 @@ public class MainActivity extends SensorFusion implements
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
 			updatePos(myPos);
 			updateBearing(bearing);
+			checkIfPointingAtSomeone(myPos, bearing);
 			
 			if(viewFlipper.getDisplayedChild() == 0 && fusedOrientation[1] <-1.3){
 				viewFlipper.setInAnimation(this, R.anim.in_from_top);
@@ -224,6 +225,17 @@ public class MainActivity extends SensorFusion implements
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
 		placeDummyLocations(nbrDummyLocations);
+	}
+	
+	public void checkIfPointingAtSomeone(LatLng pos, float bearing) {
+		Location locA, locB; 
+		locA = locationClient.getLastLocation();
+		locB = locationClient.getLastLocation();
+		
+		locA.setLatitude(pos.latitude);
+		locA.setLongitude(pos.longitude);
+		
+		bootstrap.vibrateIfPointedAt(locA, locB, bearing);	
 	}
 
 }
