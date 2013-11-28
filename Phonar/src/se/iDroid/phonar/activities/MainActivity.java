@@ -1,23 +1,22 @@
 package se.iDroid.phonar.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import se.iDroid.phonar.R;
 import se.iDroid.phonar.bootstrap.Bootstrap;
 import se.iDroid.phonar.data.Data;
+import se.iDroid.phonar.model.User;
 import se.iDroid.phonar.sensors.SensorFusion;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -103,11 +102,13 @@ public class MainActivity extends SensorFusion implements
 	}
 	
 	private void placeDummyLocations(int nbrDummyLocations) {
+		
+		ArrayList<User> users = new ArrayList<User>();
 		if(!mapMarkers.containsKey("person 1")){
 			for(int i = 0; i <nbrDummyLocations;i++){
 				double randomLong =  1+(Math.random() -0.5)*0.002;
 				double randomLat = 1+(Math.random() -0.5)*0.001;//latitude has half the range of longitude
-				setMarker("person "+(i+1), new LatLng(myPos.latitude*randomLat,myPos.longitude*randomLong));
+				users.add(new User("person "+ i+1,myPos.latitude*randomLat,myPos.longitude*randomLong, 0));
 			}
 		}
 		else{
@@ -115,9 +116,11 @@ public class MainActivity extends SensorFusion implements
 				double randomLong =  1+(Math.random() -0.5)*0.0002;
 				double randomLat = 1+(Math.random() -0.5)*0.0001;//latitude has half the range of longitude
 				LatLng startLocation = mapMarkers.get("person " +(i+1)).getPosition();
-				setMarker("person "+(i+1), new LatLng(startLocation.latitude*randomLat,startLocation.longitude*randomLong));
+				users.add(new User("person "+i+1, startLocation.latitude*randomLat,startLocation.longitude*randomLong, 0));
 			}
 		}
+		
+		bootstrap.getModel().updateUserCoords(users);
 	}
 
 	public void setMarker(String name, LatLng pos) {
