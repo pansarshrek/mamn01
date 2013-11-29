@@ -120,7 +120,7 @@ public class MainActivity extends SensorFusion implements
 			for(int i = 0; i <nbrDummyLocations;i++){
 				double randomLong =  1+(Math.random() -0.5)*0.002;
 				double randomLat = 1+(Math.random() -0.5)*0.001;//latitude has half the range of longitude
-				users.add(new User("person "+ i+1,myPos.latitude*randomLat,myPos.longitude*randomLong, 0));
+				users.add(new User("person "+ (i+1),myPos.latitude*randomLat,myPos.longitude*randomLong, 0));
 			}
 		}
 		else{
@@ -128,7 +128,7 @@ public class MainActivity extends SensorFusion implements
 				double randomLong =  1+(Math.random() -0.5)*0.0002;
 				double randomLat = 1+(Math.random() -0.5)*0.0001;//latitude has half the range of longitude
 				LatLng startLocation = mapMarkers.get("person " +(i+1)).getPosition();
-				users.add(new User("person "+i+1, startLocation.latitude*randomLat,startLocation.longitude*randomLong, 0));
+				users.add(new User("person "+ (i+1), startLocation.latitude*randomLat,startLocation.longitude*randomLong, 0));
 			}
 		}
 		
