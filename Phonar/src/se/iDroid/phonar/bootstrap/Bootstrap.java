@@ -27,12 +27,14 @@ public class Bootstrap implements Observer {
 	private CommunicationMonitor comMon;
 	private MainActivity activity;
 	private PhonarVibrator pv;
+	private boolean isPointed;
 	
 
 	public Bootstrap(MainActivity activity) {
 		DatagramSocket socket;
 		this.activity = activity;
 		pv = new PhonarVibrator(activity);
+		isPointed = false;
 		
 		
 		try {
@@ -78,8 +80,11 @@ public class Bootstrap implements Observer {
 	}
 	
 	public void vibrateIfPointedAt(Location locA, Location locB, float bearing) {
+		
+		boolean isAnyonePointingAtAnyone = false;
 
 		HashMap<String, User> users = model.getUsers();
+		
 		for (Entry<String, User> e : users.entrySet()) {
 			User user = e.getValue();
 			
@@ -89,12 +94,18 @@ public class Bootstrap implements Observer {
 			long now = System.currentTimeMillis();
 
 			if (Math.abs(locA.bearingTo(locB) - bearing) < 1) {
-				if (now - user.getLastVibrationTime() > 5000) {
+				if (!isPointed) {
 					pv.vib();  // vibrate
 					Log.d("Phonar", "I am pointing at " + e.getValue().getName());
-					user.setLastVibrationTime(now);
+					isPointed = true;
 				}
+				
+				isAnyonePointingAtAnyone = true;
 			}
+		}
+		
+		if(!isAnyonePointingAtAnyone) {
+			isPointed = false;
 		}
 	}
 }
