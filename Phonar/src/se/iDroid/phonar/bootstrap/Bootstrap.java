@@ -81,12 +81,19 @@ public class Bootstrap implements Observer {
 
 		HashMap<String, User> users = model.getUsers();
 		for (Entry<String, User> e : users.entrySet()) {
-			locB.setLatitude(e.getValue().getLatitude());
-			locB.setLongitude(e.getValue().getLongitude());
+			User user = e.getValue();
+			
+			locB.setLatitude(user.getLatitude());
+			locB.setLongitude(user.getLongitude());
+			
+			long now = System.currentTimeMillis();
 
 			if (Math.abs(locA.bearingTo(locB) - bearing) < 1) {
-				pv.vib();  // vibrate
-				Log.d("Phonar", "I am pointing at " + e.getValue().getName());
+				if (now - user.getLastVibrationTime() > 5000) {
+					pv.vib();  // vibrate
+					Log.d("Phonar", "I am pointing at " + e.getValue().getName());
+					user.setLastVibrationTime(now);
+				}
 			}
 		}
 	}

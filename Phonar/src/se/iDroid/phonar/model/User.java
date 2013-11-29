@@ -9,12 +9,14 @@ public class User {
 	private double latitude;
 	private double longitude;
 	private double altitude;
+	private long lastVibrationTime;
 	
 	public User(String name, double latitude, double longitude, double altitude) {
 		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
+		this.lastVibrationTime = System.currentTimeMillis();
 	}
 	
 	public User(DataInputStream dis) throws IOException {
@@ -54,6 +56,14 @@ public class User {
 	
 	public void setAltitude(double altitude) {
 		this.altitude = altitude;
+	}
+	
+	public long getLastVibrationTime() {
+		return lastVibrationTime;
+	}
+	
+	public void setLastVibrationTime(long time) {
+		this.lastVibrationTime = time;
 	}
 	
 
