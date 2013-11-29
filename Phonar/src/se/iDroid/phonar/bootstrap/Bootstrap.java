@@ -13,6 +13,7 @@ import se.iDroid.phonar.communication.PollThread;
 import se.iDroid.phonar.communication.ReceiverThread;
 import se.iDroid.phonar.communication.SendThread;
 import se.iDroid.phonar.data.Data;
+import se.iDroid.phonar.feedback.PhonarVibrator;
 import se.iDroid.phonar.model.Model;
 import se.iDroid.phonar.model.User;
 import android.location.Location;
@@ -26,11 +27,13 @@ public class Bootstrap implements Observer {
 	private Model model;
 	private CommunicationMonitor comMon;
 	private MainActivity activity;
+	private PhonarVibrator pv;
 	
 
 	private Bootstrap(MainActivity activity) {
 		DatagramSocket socket;
 		this.activity = activity;
+		pv = new PhonarVibrator(activity);
 		
 		
 		try {
@@ -90,7 +93,7 @@ public class Bootstrap implements Observer {
 			locB.setLongitude(e.getValue().getLongitude());
 
 			if (Math.abs(locA.bearingTo(locB) - bearing) < 2) {
-				// vibrate
+				pv.vib();  // vibrate
 				Log.d("Phonar", "I am pointing at " + e.getValue().getName());
 			}
 		}
