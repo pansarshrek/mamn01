@@ -79,7 +79,7 @@ public class MainActivity extends SensorFusion implements
 		
 		Log.d("Phonar", "starting");
 		
-		bootstrap = Bootstrap.getInstance(this);
+		bootstrap = new Bootstrap(this);
 		bootstrap.getCommunicationMonitor().createUser();
 		locationClient = new LocationClient(this, this, this);
 		
@@ -97,6 +97,7 @@ public class MainActivity extends SensorFusion implements
         map.getUiSettings().setCompassEnabled(false);
         map.getUiSettings().setZoomControlsEnabled(false);
         map.getUiSettings().setScrollGesturesEnabled(false);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
         
         map.moveCamera(CameraUpdateFactory.zoomTo(13));
 	}
@@ -235,10 +236,12 @@ public class MainActivity extends SensorFusion implements
 		locA = locationClient.getLastLocation();
 		locB = locationClient.getLastLocation();
 		
-		locA.setLatitude(pos.latitude);
-		locA.setLongitude(pos.longitude);
-		
-		bootstrap.vibrateIfPointedAt(locA, locB, bearing);	
+		if (locA != null && locB != null) {
+			locA.setLatitude(pos.latitude);
+			locA.setLongitude(pos.longitude);
+			
+			bootstrap.vibrateIfPointedAt(locA, locB, bearing);
+		}
 	}
 
 }

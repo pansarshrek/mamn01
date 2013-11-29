@@ -22,15 +22,14 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Bootstrap implements Observer {
-	
-	private static Bootstrap instance;
+
 	private Model model;
 	private CommunicationMonitor comMon;
 	private MainActivity activity;
 	private PhonarVibrator pv;
 	
 
-	private Bootstrap(MainActivity activity) {
+	public Bootstrap(MainActivity activity) {
 		DatagramSocket socket;
 		this.activity = activity;
 		pv = new PhonarVibrator(activity);
@@ -62,13 +61,6 @@ public class Bootstrap implements Observer {
 	
 	public Model getModel() {
 		return model;
-	}
-	
-	public static Bootstrap getInstance(MainActivity activity) {
-		if (instance == null) {
-			instance = new Bootstrap(activity);
-		} 
-		return instance;
 	}
 
 	@Override
