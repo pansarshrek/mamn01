@@ -92,7 +92,7 @@ public class Bootstrap implements Observer {
 			locB.setLatitude(e.getValue().getLatitude());
 			locB.setLongitude(e.getValue().getLongitude());
 
-			if (Math.abs(locA.bearingTo(locB) - bearing) < 2) {
+			if (Math.abs(locA.bearingTo(locB) - bearing) < 1) {
 				pv.vib();  // vibrate
 				Log.d("Phonar", "I am pointing at " + e.getValue().getName());
 			}

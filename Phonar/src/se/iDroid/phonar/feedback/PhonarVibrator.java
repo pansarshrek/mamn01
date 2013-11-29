@@ -14,7 +14,7 @@ public class PhonarVibrator {
 	}
 	
 	public void vib() {
-		v.vibrate(500);
+		v.vibrate(200);
 	}
 
 }
