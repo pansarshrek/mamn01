@@ -9,8 +9,16 @@ import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.User;
 import se.iDroid.phonar.sensors.SensorFusion;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +36,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -45,6 +54,8 @@ public class MainActivity extends SensorFusion implements
 	private HashMap<String, Marker> mapMarkers;
 	private int nbrDummyLocations = 4;
 	private ViewFlipper viewFlipper;
+	private boolean connected = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -132,6 +143,8 @@ public class MainActivity extends SensorFusion implements
 			Marker marker = map.addMarker(new MarkerOptions()
                 .title(name)
                 .position(pos)); 
+			Bitmap bm = drawTextToBitmap(this, R.drawable.marker_small, name);
+			marker.setIcon(BitmapDescriptorFactory.fromBitmap(bm));
 			mapMarkers.put(name, marker);
 		}
 	}
@@ -208,10 +221,13 @@ public class MainActivity extends SensorFusion implements
 		Toast.makeText(this, "ConnectionFailed", Toast.LENGTH_SHORT).show();
 	}
 
+	
+	
 	@Override
 	public void onConnected(Bundle arg0) {
         Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
         locationClient.requestLocationUpdates(locationRequest, this);
+        connected = true;
 	}
 
 	@Override
@@ -232,16 +248,53 @@ public class MainActivity extends SensorFusion implements
 	}
 	
 	public void checkIfPointingAtSomeone(LatLng pos, float bearing) {
-		Location locA, locB; 
-		locA = locationClient.getLastLocation();
-		locB = locationClient.getLastLocation();
-		
-		if (locA != null && locB != null) {
-			locA.setLatitude(pos.latitude);
-			locA.setLongitude(pos.longitude);
+		if (connected) {
+			Location locA, locB; 
+			locA = locationClient.getLastLocation();
+			locB = locationClient.getLastLocation();
 			
-			bootstrap.vibrateIfPointedAt(locA, locB, bearing);
+			if (locA != null && locB != null) {
+				locA.setLatitude(pos.latitude);
+				locA.setLongitude(pos.longitude);
+				
+				bootstrap.vibrateIfPointedAt(locA, locB, bearing);
+			}
 		}
+	}
+	
+	public Bitmap drawTextToBitmap(Context gContext, int gResId, String gText) {
+		Resources resources = gContext.getResources();
+		float scale = resources.getDisplayMetrics().density;
+		Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId);
+
+		android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
+		// set default bitmap config if none
+		if (bitmapConfig == null) {
+			bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+		}
+		// resource bitmaps are imutable,
+		// so we need to convert it to mutable one
+		bitmap = bitmap.copy(bitmapConfig, true);
+
+		Canvas canvas = new Canvas(bitmap);
+		// new antialised Paint
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		// text color - #3D3D3D
+		paint.setColor(Color.rgb(61, 61, 61));
+		// text size in pixels
+		paint.setTextSize((int) (14 * scale));
+		// text shadow
+		paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+		// draw text to the Canvas center
+		Rect bounds = new Rect();
+		paint.getTextBounds(gText, 0, gText.length(), bounds);
+		int x = (bitmap.getWidth() - bounds.width()) / 2;
+		int y = (bitmap.getHeight() + bounds.height()) / 2;
+
+		canvas.drawText(gText, x, y-15, paint);
+
+		return bitmap;
 	}
 
 }
