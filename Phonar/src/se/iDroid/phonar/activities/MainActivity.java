@@ -244,7 +244,7 @@ public class MainActivity extends SensorFusion implements
 		
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
-		placeDummyLocations(nbrDummyLocations);
+//		placeDummyLocations(nbrDummyLocations);
 	}
 	
 	public void checkIfPointingAtSomeone(LatLng pos, float bearing) {

@@ -4,20 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import exceptions.UserDoesNotExistException;
 import exceptions.UserExistsException;
 
 public class UserDatabase {
 
 	private static HashMap<String, User> users = new HashMap<String, User>();
+	private static final String DEFAULT_NAME = "DEFAULT";
 	
 	public static boolean addUser(String name) throws UserExistsException {
-		if (users.containsKey(name)) {
-			throw new UserExistsException();
-		} else {
-			users.put(name, new User(name, new Position(0, 0, 0)));
+		if (!DEFAULT_NAME.equals(name)) {
+			if (users.containsKey(name)) {
+				throw new UserExistsException();
+			} else {
+				users.put(name, new User(name, new Position(0, 0, 0)));
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	public static User getUser(String name) {
@@ -42,13 +45,14 @@ public class UserDatabase {
 	}
 	
 	public static void updateUserPos(String name, Position pos) throws UserExistsException {
-		
-		User u = getUser(name);
-		if (u == null) {
-			UserDatabase.addUser(name);
-			u = getUser(name);
+		if (!DEFAULT_NAME.equals(name)) {
+			User u = getUser(name);
+			if (u == null) {
+				UserDatabase.addUser(name);
+				u = getUser(name);
+			}
+			u.setPosition(pos);
 		}
-		u.setPosition(pos);
 	}
 	
 }

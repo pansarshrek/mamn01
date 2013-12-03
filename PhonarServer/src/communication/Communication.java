@@ -7,6 +7,7 @@ import requesthandlers.CreateUserHandler;
 import requesthandlers.GetCoordsHandler;
 import requesthandlers.NoHandler;
 import requesthandlers.RequestHandler;
+import requesthandlers.ServerStatusHandler;
 import requesthandlers.UpdateCoordsHandler;
 
 public class Communication {
@@ -16,7 +17,8 @@ public class Communication {
 		COM_CREATE_USER = 5,
 		ANS_SUCCESS = 6,		// ex: success to create user
 		ANS_FAILURE = 7,		// ex: failed to create user
-		ANS_GET_COORDS = 8;		// contains data for COM_GET_COORDS request
+		ANS_GET_COORDS = 8,		// contains data for COM_GET_COORDS request
+		COM_SERVER_STATUS = 9;  // Get status of the server
 	
 	public static void handleRequest(DatagramSocket socket, DatagramPacket packet) {
 		if (packet.getLength() > 0) {
@@ -32,6 +34,9 @@ public class Communication {
 				break;
 			case COM_CREATE_USER:
 				handler = new CreateUserHandler();
+				break;
+			case COM_SERVER_STATUS:
+				handler = new ServerStatusHandler();
 				break;
 			default:
 				handler = new NoHandler();
