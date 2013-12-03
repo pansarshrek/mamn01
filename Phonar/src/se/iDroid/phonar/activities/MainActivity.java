@@ -322,7 +322,7 @@ public class MainActivity extends SensorFusion implements
 
 			@Override
 			public void addObjectsTo(GL1Renderer renderer, World world, GLFactory objectFactory) {
-				//GeoObj o = new GeoObj();
+				//GeoObj o = new GeoObj(pos);
 				//o.setComp()
 				//o.setComp(objectFactory.newTextObject());
 				//for(int i = 0; i < mapMarkers.size(); i++) {
