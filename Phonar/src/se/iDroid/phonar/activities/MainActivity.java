@@ -1,5 +1,9 @@
 package se.iDroid.phonar.activities;
 
+import geo.GeoObj;
+import gl.GL1Renderer;
+import gl.GLFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,6 +12,10 @@ import se.iDroid.phonar.bootstrap.Bootstrap;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.User;
 import se.iDroid.phonar.sensors.SensorFusion;
+import system.ArActivity;
+import system.DefaultARSetup;
+import util.Vec;
+import worldData.World;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,6 +64,7 @@ public class MainActivity extends SensorFusion implements
 	private ViewFlipper viewFlipper;
 	private boolean connected = false;
 	private Marker mPositionMarker;
+	//private Bitmap bm;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -216,6 +225,7 @@ public class MainActivity extends SensorFusion implements
 				viewFlipper.setInAnimation(this, R.anim.in_from_top);
 		        viewFlipper.setOutAnimation(this, R.anim.out_to_top);
 		        viewFlipper.showNext();
+		        buildARView();
 			}
 			else if(viewFlipper.getDisplayedChild() == 1 && fusedOrientation[1] >-0.7){
 				viewFlipper.setInAnimation(this, R.anim.in_from_bottom);
@@ -305,5 +315,23 @@ public class MainActivity extends SensorFusion implements
 
 		return bitmap;
 	}
+	
+
+	public void buildARView() {
+		ArActivity.startWithSetup(this, new DefaultARSetup() {
+
+			@Override
+			public void addObjectsTo(GL1Renderer renderer, World world, GLFactory objectFactory) {
+				//GeoObj o = new GeoObj();
+				//o.setComp()
+				//o.setComp(objectFactory.newTextObject());
+				//for(int i = 0; i < mapMarkers.size(); i++) {
+				world.add(objectFactory.newPositionMarker(camera));
+				//}
+			}
+			
+		});
+	}
+	
 
 }
