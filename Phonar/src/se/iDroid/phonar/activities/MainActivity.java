@@ -326,7 +326,7 @@ public class MainActivity extends SensorFusion implements
 				//o.setComp()
 				//o.setComp(objectFactory.newTextObject());
 				//for(int i = 0; i < mapMarkers.size(); i++) {
-				world.add(objectFactory.newPositionMarker(camera));
+				world.add(objectFactory.newTextObject("Ar Test", new Vec(10, 0, 0), getApplicationContext(), camera));
 				//}
 			}
 			
