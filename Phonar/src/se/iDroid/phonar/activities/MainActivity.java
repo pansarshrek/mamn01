@@ -55,6 +55,7 @@ public class MainActivity extends SensorFusion implements
 	private int nbrDummyLocations = 4;
 	private ViewFlipper viewFlipper;
 	private boolean connected = false;
+	private Marker mPositionMarker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class MainActivity extends SensorFusion implements
 
 			alert.show();
 		}
-		
+				
 		Log.d("Phonar", "starting");
 		
 		bootstrap = new Bootstrap(this);
@@ -104,13 +105,18 @@ public class MainActivity extends SensorFusion implements
                 .findFragmentById(R.id.map)).getMap();
 
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        map.setMyLocationEnabled(true);
+        
         map.getUiSettings().setCompassEnabled(false);
         map.getUiSettings().setZoomControlsEnabled(false);
         map.getUiSettings().setScrollGesturesEnabled(false);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         
         map.moveCamera(CameraUpdateFactory.zoomTo(13));
+        
+        
+        mPositionMarker = map.addMarker(new MarkerOptions().flat(true)
+        		.icon(BitmapDescriptorFactory.fromResource(R.drawable.position_indicator)).anchor(0.5f, 0.5f)
+        		.position(myPos));
 	}
 	
 	private void placeDummyLocations(int nbrDummyLocations) {
@@ -159,6 +165,7 @@ public class MainActivity extends SensorFusion implements
         CameraPosition currentPlace = new CameraPosition.Builder(map.getCameraPosition())
                 .target(pos).build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace));
+        
 	}
 
 	@Override
@@ -201,6 +208,8 @@ public class MainActivity extends SensorFusion implements
 			float bearing = (float) (fusedOrientation[0] * 180 / Math.PI);
 			updatePos(myPos);
 			updateBearing(bearing);
+			mPositionMarker.setPosition(myPos);
+			mPositionMarker.setRotation(bearing);
 			checkIfPointingAtSomeone(myPos, bearing);
 			
 			if(viewFlipper.getDisplayedChild() == 0 && fusedOrientation[1] <-1.3){
