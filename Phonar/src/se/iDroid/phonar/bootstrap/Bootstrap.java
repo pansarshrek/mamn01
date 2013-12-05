@@ -81,7 +81,7 @@ public class Bootstrap implements Observer {
 	
 	public void vibrateIfPointedAt(Location locA, Location locB, float bearing) {
 		
-		boolean isAnyonePointingAtAnyone = false;
+		boolean amIPointingAtAnyone = false;
 
 		HashMap<String, User> users = model.getUsers();
 		
@@ -100,11 +100,11 @@ public class Bootstrap implements Observer {
 					isPointed = true;
 				}
 				
-				isAnyonePointingAtAnyone = true;
+				amIPointingAtAnyone = true;
 			}
 		}
 		
-		if(!isAnyonePointingAtAnyone) {
+		if(!amIPointingAtAnyone) {
 			isPointed = false;
 		}
 	}
