@@ -1,8 +1,5 @@
 package se.iDroid.phonar.activities;
 
-import gl.GL1Renderer;
-import gl.GLFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +9,6 @@ import se.iDroid.phonar.bootstrap.Bootstrap;
 import se.iDroid.phonar.data.Data;
 import se.iDroid.phonar.model.User;
 import se.iDroid.phonar.sensors.SensorFusion;
-import system.ArActivity;
-import system.DefaultARSetup;
-import util.Vec;
-import worldData.World;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,16 +19,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.TextureView;
-import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -77,6 +73,9 @@ public class MainActivity extends SensorFusion implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.d("phonar", "starting group activity");
+		
+		RelativeLayout arParent = (RelativeLayout) findViewById(R.id.ar_parent);
+		arParent.setClipChildren(false);
 		
 		textureView = (TextureView) findViewById(R.id.ar); 
 		textureView.setSurfaceTextureListener(this);
@@ -194,16 +193,6 @@ public class MainActivity extends SensorFusion implements
 		getMenuInflater().inflate(R.menu.chart_view, menu);
 		return true;
 	}
-	
-	public void buttonClick(View v) {
-		Location loc = locationClient.getLastLocation();
-		if (loc != null) {
-			String text = "Alt: " + loc.getAltitude() + ", Long: " + loc.getLongitude() + ", Lat: " + loc.getLatitude();
-			Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-		} else {
-			Log.d("click", "Didn't work :(");
-		}
-	}
 
 	@Override
     protected void onStart() {
@@ -231,6 +220,24 @@ public class MainActivity extends SensorFusion implements
 			mPositionMarker.setPosition(myPos);
 			mPositionMarker.setRotation(bearing);
 			checkIfPointingAtSomeone(myPos, bearing);
+			
+			ImageView arMarker = (ImageView) findViewById(R.id.ar_mark);
+			int width = arMarker.getWidth();
+			int height = arMarker.getHeight();
+			
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			int screenWidth = size.x;
+			int screenHeight = size.y;
+			Log.d("bearing", "bearing: " + bearing);
+			RelativeLayout.LayoutParams margins = new RelativeLayout.LayoutParams(arMarker.getLayoutParams());
+			margins.leftMargin = (int) (screenWidth/2 - width / 2 + (bearing*3));
+			margins.topMargin = (int) (screenHeight/2 - height / 2) - 30;
+			
+			
+			
+			arMarker.setLayoutParams(margins);
 			
 			if(viewFlipper.getDisplayedChild() == 0 && fusedOrientation[1] <-1.3){
 				viewFlipper.setInAnimation(this, R.anim.in_from_top);

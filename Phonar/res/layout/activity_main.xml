@@ -19,6 +19,7 @@
             android:layout_height="fill_parent" />
 
         <RelativeLayout
+            android:id="@+id/ar_parent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
 
@@ -26,13 +27,14 @@
                 android:id="@+id/ar"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent" />
+ 
             <ImageView 
                 android:id="@+id/ar_mark"
                 android:src="@drawable/ar_marker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
                 />
         </RelativeLayout>
     </ViewFlipper>
