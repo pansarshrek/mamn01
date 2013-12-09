@@ -1,9 +1,9 @@
 package se.iDroid.phonar.activities;
 
-import geo.GeoObj;
 import gl.GL1Renderer;
 import gl.GLFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,10 +27,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -52,7 +55,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends SensorFusion implements
 	GooglePlayServicesClient.ConnectionCallbacks,
-	GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+	GooglePlayServicesClient.OnConnectionFailedListener, LocationListener, TextureView.SurfaceTextureListener {
 	
 	private LocationClient locationClient;
 	private LatLng myPos;
@@ -66,11 +69,19 @@ public class MainActivity extends SensorFusion implements
 	private Marker mPositionMarker;
 	//private Bitmap bm;
 	
+	private TextureView textureView;
+	private Camera camera;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.d("phonar", "starting group activity");
+		
+		textureView = (TextureView) findViewById(R.id.ar); 
+		textureView.setSurfaceTextureListener(this);
+		
+				
 		mapMarkers = new HashMap<String, Marker>();
 		viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
 		final SharedPreferences sp = getSharedPreferences(Data.DATAFILE, 0);
@@ -225,7 +236,6 @@ public class MainActivity extends SensorFusion implements
 				viewFlipper.setInAnimation(this, R.anim.in_from_top);
 		        viewFlipper.setOutAnimation(this, R.anim.out_to_top);
 		        viewFlipper.showNext();
-		        buildARView();
 			}
 			else if(viewFlipper.getDisplayedChild() == 1 && fusedOrientation[1] >-0.7){
 				viewFlipper.setInAnimation(this, R.anim.in_from_bottom);
@@ -263,7 +273,6 @@ public class MainActivity extends SensorFusion implements
 		
 		bootstrap.getModel().setLatitude(loc.getLatitude());
 		bootstrap.getModel().setLongitude(loc.getLongitude());
-//		placeDummyLocations(nbrDummyLocations);
 	}
 	
 	public void checkIfPointingAtSomeone(LatLng pos, float bearing) {
@@ -315,22 +324,39 @@ public class MainActivity extends SensorFusion implements
 
 		return bitmap;
 	}
-	
 
-	public void buildARView() {
-		ArActivity.startWithSetup(this, new DefaultARSetup() {
+	@Override
+	public void onSurfaceTextureAvailable(SurfaceTexture surface, int width,
+			int height) {
+		camera = Camera.open();
+		camera.setDisplayOrientation(90);
+		try {
+			camera.setPreviewTexture(surface);
+			camera.startPreview();
+		} catch (IOException e) {
+			Log.e("camera", "Didnt work", e);
+		}
+		
+	}
 
-			@Override
-			public void addObjectsTo(GL1Renderer renderer, World world, GLFactory objectFactory) {
-				//GeoObj o = new GeoObj(pos);
-				//o.setComp()
-				//o.setComp(objectFactory.newTextObject());
-				//for(int i = 0; i < mapMarkers.size(); i++) {
-				world.add(objectFactory.newTextObject("Ar Test", new Vec(10, 0, 0), getApplicationContext(), camera));
-				//}
-			}
-			
-		});
+	@Override
+	public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+		camera.stopPreview();
+        camera.release();
+        return true;
+	}
+
+	@Override
+	public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width,
+			int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

@@ -18,22 +18,10 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-        <LinearLayout
+        <TextureView 
+            android:id="@+id/ar"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="AR stuff goes here"
-                android:textColor="#191975"
-                android:textSize="25dp"
-                android:textStyle="bold" >
-            </TextView>
-        </LinearLayout>
+            android:layout_height="fill_parent" />
     </ViewFlipper>
 
 </RelativeLayout>
