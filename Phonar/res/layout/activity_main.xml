@@ -18,10 +18,23 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-        <TextureView 
-            android:id="@+id/ar"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent" >
+
+            <TextureView
+                android:id="@+id/ar"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+            <ImageView 
+                android:id="@+id/ar_mark"
+                android:src="@drawable/ar_marker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
     </ViewFlipper>
 
 </RelativeLayout>
