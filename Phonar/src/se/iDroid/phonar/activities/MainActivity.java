@@ -76,6 +76,7 @@ public class MainActivity extends SensorFusion implements
 		
 		RelativeLayout arParent = (RelativeLayout) findViewById(R.id.ar_parent);
 		arParent.setClipChildren(false);
+		arParent.setClipToPadding(false);
 		
 		textureView = (TextureView) findViewById(R.id.ar); 
 		textureView.setSurfaceTextureListener(this);
@@ -230,9 +231,10 @@ public class MainActivity extends SensorFusion implements
 			display.getSize(size);
 			int screenWidth = size.x;
 			int screenHeight = size.y;
-			Log.d("bearing", "bearing: " + bearing);
+//			Log.d("bearing", "bearing: " + bearing);
+			
 			RelativeLayout.LayoutParams margins = new RelativeLayout.LayoutParams(arMarker.getLayoutParams());
-			margins.leftMargin = (int) (screenWidth/2 - width / 2 + (bearing*3));
+			margins.leftMargin = (int) (screenWidth/2 - width / 2 - (bearing));
 			margins.topMargin = (int) (screenHeight/2 - height / 2) - 30;
 			
 			
@@ -340,6 +342,8 @@ public class MainActivity extends SensorFusion implements
 		try {
 			camera.setPreviewTexture(surface);
 			camera.startPreview();
+			Log.d("camera", "hor: " + camera.getParameters().getHorizontalViewAngle());
+			Log.d("camera", "ver: " + camera.getParameters().getVerticalViewAngle());
 		} catch (IOException e) {
 			Log.e("camera", "Didnt work", e);
 		}
