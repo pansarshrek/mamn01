@@ -276,7 +276,6 @@ public class MainActivity extends SensorFusion implements
 
 	@Override
 	public void onLocationChanged(Location loc) {
-		Toast.makeText(this, "location updated", Toast.LENGTH_SHORT).show();
 		myPos = new LatLng(loc.getLatitude(), loc.getLongitude());
 		updatePos(myPos);
 		
